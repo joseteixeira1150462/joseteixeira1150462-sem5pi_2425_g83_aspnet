@@ -1,0 +1,14 @@
+@startuml RemoveStaff
+actor Admin as A
+participant "HealthCare System" as HCS
+
+A -> HCS : 1: Wants to remove/deactivate Staff profile
+HCS -> A : 2: Requires Staff Identification (e.g., License Number)
+A -> HCS : 3: Provides Staff Identification
+
+alt [Profile Deactivation]
+    HCS -> A : 4: Staff profile successfully removed/deactivated
+else
+    HCS -> A : 5: Staff profile could not be removed (e.g., Not Found or Already Inactive)
+end
+@enduml

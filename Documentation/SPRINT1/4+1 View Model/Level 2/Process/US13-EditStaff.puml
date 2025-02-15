@@ -1,0 +1,18 @@
+@startuml EditStaff
+actor Admin as A
+participant "SPA" as SPA
+participant "HealthCare System API" as HCS
+
+A -> SPA : 1: Wants to edit a Staff profile
+SPA -> A : 1.1: Displays form to edit Staff details
+A -> SPA : 2: Provides Staff new phone or new timeslot
+SPA -> HCS : 2.1: PUT /staff/{licenseNumber} with updated Staff details
+
+alt [Profile Update Successful]
+    HCS -> SPA : 2.2: Responds with success message
+    SPA -> A : 2.3: Informs Admin of success
+else [Profile Update Failed]
+    HCS -> SPA : 2.2: Responds with failure message (e.g., Invalid data or not found)
+    SPA -> A : 2.3: Informs Admin of failure
+end
+@enduml

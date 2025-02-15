@@ -1,0 +1,21 @@
+@startuml HealthCareN1
+title Vista Lógica Nível 1 - Sistema HealthCare
+
+
+
+rectangle "<<component>>\n<<system (C4)>>\nHealthCare System" as HCS {
+}
+
+
+circle "Database API" as DatabaseAPI
+circle "Login API" as LoginAPI
+
+
+
+
+
+  DatabaseAPI --> HCS : Persistência de Dados Externa
+ LoginAPI --> HCS : Autenticação e Autorização de Usuários
+
+
+@enduml

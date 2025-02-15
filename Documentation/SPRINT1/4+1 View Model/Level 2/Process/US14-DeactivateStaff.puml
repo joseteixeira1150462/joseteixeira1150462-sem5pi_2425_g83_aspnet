@@ -1,0 +1,20 @@
+@startuml DeactivateStaff
+actor Admin as A
+participant "SPA" as SPA
+participant "HealthCare System API" as HCS
+
+A -> SPA : 1: Wants to deactivate a Staff profile
+SPA -> A : 1.1: Requires Staff License Number to identify the profile
+A -> SPA : 1.2: Provides Staff License Number
+
+SPA -> HCS : 1.3: DELETE /staff/{licenseNumber} - Requests to deactivate the Staff profile by License Number
+
+alt [Staff Profile Found and Deactivated]
+    HCS -> SPA : 1.4: Responds with confirmation of successful deactivation
+    SPA -> A : 1.5: Informs Admin that the Staff profile has been deactivated successfully
+else [Staff Profile Not Found]
+    HCS -> SPA : 1.4: Responds with an error message indicating that no Staff profile with the given License Number exists
+    SPA -> A : 1.5: Informs Admin that the Staff profile could not be found
+end
+@enduml
+

@@ -1,0 +1,12 @@
+.vscode/*
+obj
+bin
+*.sln
+.devdbrc
+Infrastructure/*.db
+Infrastructure/*.db-shm
+Infrastructure/*.db-wal
+HealthCare.Tests/bin
+HealthCare.Tests/obj
+Logs/*.json
+appsettings.Development.json

@@ -1,0 +1,9 @@
+@startuml EditStaff
+actor Admin as A
+participant "HealthCare System" as HCS
+
+A -> HCS : 1: Wants to edit Staff profile
+HCS -> A : 2: Requires Staff Identification (License Number)
+A -> HCS : 3: Provides Staff new phone or New timeslot 
+HCS -> A : 4: Staff profile updated successfully
+@enduml

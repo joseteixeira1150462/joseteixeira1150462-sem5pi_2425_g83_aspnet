@@ -1,0 +1,16 @@
+@startuml ListStaff
+actor Admin as A
+participant "SPA" as SPA
+participant "HealthCare System API" as HCS
+
+A -> SPA : 1: Wants to list all Staff profiles
+SPA -> HCS : 1.1: GET /staff - Requests the list of all Staff profiles
+
+alt [Staff Found]
+    HCS -> SPA : 1.2: Responds with the list of Staff profiles
+    SPA -> A : 1.3: Displays the list of Staff profiles to Admin
+else [No Staff Found]
+    HCS -> SPA : 1.2: Responds with an empty list or not found message
+    SPA -> A : 1.3: Displays message "No Staff profiles found"
+end
+@enduml

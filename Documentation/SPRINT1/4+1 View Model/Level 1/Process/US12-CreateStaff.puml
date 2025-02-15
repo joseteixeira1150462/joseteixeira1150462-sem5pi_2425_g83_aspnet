@@ -1,0 +1,14 @@
+@startuml CriarStaff
+actor Admin as A
+participant "HealthCare System" as HCS
+
+A -> HCS : 1: Want to create Staff
+HCS -> A : 2: Requires Staff Data
+A -> HCS : 3: Inserts the Data
+
+
+ HCS -> A : 4: Staff created successfully
+
+HCS -> A : 5: Staff not created
+
+@enduml

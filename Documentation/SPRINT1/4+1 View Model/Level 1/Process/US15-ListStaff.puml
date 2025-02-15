@@ -1,0 +1,8 @@
+@startuml ListStaffs
+actor Admin as A
+participant "HealthCare System" as HCS
+
+A -> HCS : 1: Wants to list all Staff profiles
+HCS -> A : 2: Retrieves the list of all Staff profiles
+
+@enduml

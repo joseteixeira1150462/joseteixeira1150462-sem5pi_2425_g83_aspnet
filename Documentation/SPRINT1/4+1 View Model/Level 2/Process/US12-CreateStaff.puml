@@ -1,0 +1,19 @@
+@startuml CreateStaff
+actor Admin as A
+participant "SPA" as SPA
+participant "HealthCare System API" as HCS
+
+A -> SPA : 1: Wants to create a Staff profile
+SPA -> A : 1.1: asks for input details
+A -> SPA : 2: Fills in and submits the form
+SPA -> HCS : 2.1: POST /staff with Staff details
+
+alt [Staff Creation Successful]
+    HCS -> SPA : 2.2: Responds with success message
+    SPA -> A : 2.3: Informs Admin of success
+else [Staff Creation Failed]
+    HCS -> SPA : 2.2: Responds with failure message
+    SPA -> A : 2.3: Informs Admin of failure
+end
+@enduml
+

@@ -1,0 +1,41 @@
+@startuml CreateStaffUser
+
+participant "User Interface" as UI
+participant "Master Data" as MD
+participant "SMTP Server" as SMTP
+
+UI  ->  MD : POST | Create Staff User
+activate MD
+alt ["Invalid Data"]
+    UI <- MD : 400: Bad Request
+else ["Valid Data"]
+    alt ["Profile doesn't exist"]
+        UI <- MD : 404: Not Found
+    else ["Profile Exists"]
+        MD -> SMTP : Send account setup e-mail
+        activate SMTP
+        deactivate SMTP
+
+        UI <- MD : 200: OK + { UserDto }
+        deactivate MD
+    end
+end
+
+UI -> MD : PATCH | Set password and activate
+activate MD
+alt ["User not found"]
+    UI <- MD : 400: Not Found
+else ["User Found"]
+    alt ["Invalid Password OR User already active"]
+        UI <- MD : 400: Bad Request
+    else ["User Updated"]
+        MD -> SMTP : Send setup success e-mail
+        activate SMTP
+        deactivate SMTP
+
+        UI <- MD : 200: OK + { UserDto }
+        deactivate MD
+    end
+end
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml CreateStaffUser
+
+participant "EndpointRoutingMiddleware" as ROT
+participant "UsersController" as CTL
+participant "UserService" as SRV
+participant "UserMapper" as MPR
+participant "UserRepository" as URE
+participant "StaffRepository" as SRE
+participant "UserDomain" as DOM
+participant "SMTP Server" as SMTP
+participant "EmailService" as EML
+participant "UnitOfWork" as UOW
+database "HealthCareDbContext" as DBC
+
+ROT  ->  CTL : Delegates-> CreateStaffUser(CreatingUserDto dto)
+CTL -> SRV : AddStaffUserAsync(dto)
+SRV -> DOM : new User(dto.Email, dto.Role)
+SRV <- DOM : returns User instance
+SRV -> SRE : GetByEmailAsync(dto.Email)
+
+SRE -> DBC : Where(staff => staff.Email.Value == email)
+SRE <- DBC : returns IQueryable<Staff>
+
+SRV <- SRE : returns Staff instance or null
+alt [Got null from StaffRepository]
+    CTL <- SRV : returns null
+    ROT <- CTL : returns NotFound()
+else [Got Staff instance from StaffRepository]
+    SRV -> URE : AddAsync(User)
+    URE -> DBC : AddAsync(User)
+    SRV-> UOW : CommitAsync()
+    UOW -> DBC : SaveChangesAsync()
+    SRV-> EML : SendEmailAsync()
+    EML -> SMTP : 
+end
+
+
+
+
+
+@enduml

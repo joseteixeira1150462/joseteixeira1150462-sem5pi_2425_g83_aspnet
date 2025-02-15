@@ -1,0 +1,20 @@
+@startuml CreateStaffUser
+
+actor Admin as A
+actor BackofficeUser as BU
+
+participant "HealthCare System" as HCS
+participant "SMTP Server" as SMTP
+
+A  ->  HCS : Want to create Staff User
+A <--- HCS : Present Staff User creation form
+A  ->  HCS : Submit Staff User creation form
+HCS -> SMTP  : Send account setup e-mail
+
+BU  ->  HCS : Click account setup button in e-mail
+BU <--- HCS : Present account activation form
+BU  ->  HCS : Submit account activation form
+HCS -> SMTP : Send setup success e-mail
+BU <-   HCS : Redirect to login page
+
+@enduml

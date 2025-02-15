@@ -1,0 +1,219 @@
+@startuml Domain Model
+
+package "User Aggregate" {
+
+    Entity User <<Aggregate Root>> {
+        - username: String
+        - password: String
+        - role: String
+        - email: String
+    }
+
+    Class UserId <<Value Object>> {
+        - id: EntityId
+    }
+
+    User "1" *-r- "1" UserId
+
+}
+
+package "Staff Aggregate" {
+
+    Class Staff {
+        - firstName: String
+        - lastName: String
+        - fullName: String
+        - licenseNumber: String
+        - email: String
+        - phoneNumber: String
+    }
+
+    Class StaffId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Class TimeSlot <<Value Object>> {
+        - starting: DateTime
+        - ending: DateTime
+    }
+
+    Staff "1" *-- "1" StaffId
+    Staff "1" *-right- "0..*" TimeSlot
+    Staff "0..1" -- "0..1" UserId
+    Staff "0..*" -- "1" SpecializationId
+
+}
+
+package "Patient Aggregate" {
+
+    Entity Patient <<Aggregate Root>> {
+        - firstName: String
+        - lastName: String
+        - fullName: String
+        - birthDate: DateTime
+        - gender: String
+        - medicalRecordNumber: String
+        - email: String
+        - phoneNumber: String
+        - healthConditions: String
+        - emergencyContact: String
+    }
+
+    Class PatientId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Patient "1" *-r- "1" PatientId
+    Patient "0..1" -- "0..1" UserId
+
+}
+
+package "Operation Request Aggregate" {
+
+    Entity OperationRequest <<Aggregate Root>> {
+        - deadlineDate: DateTime
+        - priority: String
+    }
+
+    Class OperationRequestId <<Value Object>> {
+        - id: EntityId
+    }
+
+    OperationRequest "1" *-r- "1" OperationRequestId
+    OperationRequest "0..*" -- "1" StaffId : Garantir id -> doctorID
+    OperationRequest "0..*" -- "1" PatientId
+
+}
+
+package "Appointment Aggregate" {
+
+    Entity Appointment <<Aggregate Root>> {
+        - scheduledDate: DateTime
+        - status: String
+    }
+
+    Class AppointmentId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Appointment "1" *-- "1" AppointmentId
+    Appointment "0..1" -- "1" OperationRequestId
+    Appointment "0..*" -- "1..*" StaffId
+
+}
+
+package "Operation Type Aggregate" {
+    Entity OperationType <<Aggregate Root>> {
+        - name: String
+        - active: Boolean
+    }
+
+    Class OperationTypeVersion <<Value Object>> {
+        validInterval: TimeSlot
+    }
+
+    Class OperationTypeId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Class OperationTypeSpecialization <<Value Object>> {
+        - quantity: Int32
+        - role: String
+        - specialization: String /' !!! NEEDS CHANGE !!! '/ 
+    }
+
+    Class OperationTypeDuration <<Value Object>> {
+        - preparation: Int32
+        - surgery: Int32
+        - cleaning: Int32
+    }
+
+    OperationType "1" *-- "1" OperationTypeId
+    OperationType "1" *-- "1..*" OperationTypeVersion
+    OperationTypeVersion "1" *-- "1..*" OperationTypeSpecialization
+    OperationTypeVersion "1" *-- "1" OperationTypeDuration
+    OperationTypeId "1" -- "0..*" OperationRequest
+
+}
+
+package "Sugery Room Aggregate" {
+
+    Entity SurgeryRoom <<Aggregate Root>> {
+        - type: String
+        - capacity: Int32
+        - status: String
+    }
+
+    Class SurgeryRoomId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Class TimeSlot <<Value Object>> {
+        - starting: DateTime
+        - ending: DateTime
+    }
+
+    SurgeryRoom "1" *-- "1" SurgeryRoomId
+    SurgeryRoomId "1" -- "0..*" Appointment
+    SurgeryRoom "1" *-- "0..*" TimeSlot
+
+}
+
+package "Patient Medical Record" {
+
+    Entity MedicalRecord <<Aggregate Root>> {}
+
+    Class MedicalRecordId <<Value Object>> {
+        - id: EntityId
+    }
+
+    MedicalRecord "1" *-- "1" MedicalRecordId
+    MedicalRecordId "0..1" -- "1" Patient
+
+}
+
+package "Allergies" {
+
+    Entity Allergy <<Aggregate Root>> {
+        - description: String
+    }
+
+    Class AllergyId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Allergy "1" *-- "1" AllergyId
+    AllergyId "0..*" -- "0..*" MedicalRecord
+
+}
+
+package "Medical Condition" {
+
+    Entity MedicalCondition <<Aggregate Root>> {
+        - description: String
+    }
+
+    Class MedicalConditionId <<Value Object>> {
+        - id: EntityId
+    }
+
+    MedicalCondition "1" *-- "1" MedicalConditionId
+    MedicalConditionId "0..*" -- "0..*" MedicalRecord
+
+}
+
+package "Specializations" {
+
+    Entity Specialization <<Aggregate Root>> {
+        - description: String
+    }
+
+    Class SpecializationId <<Value Object>> {
+        - id: EntityId
+    }
+
+    Specialization "1" *-- "1" SpecializationId
+
+}
+
+@enduml

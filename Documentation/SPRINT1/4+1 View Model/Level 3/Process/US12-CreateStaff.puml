@@ -1,0 +1,35 @@
+@startuml CreateStaffSequence
+actor Admin as A
+participant "Routing" as R
+participant "Controller" as C
+participant "DTO" as D
+participant "Application Service" as S
+participant "Repository" as Repo
+participant "Domain Model (DDD)" as DM
+participant "Persistence" as P
+
+A -> R : 1: POST Create Staff Request
+R -> D : 1.1: Create DTO (newStaffData)
+R -> C : 1.2: POST (newStaffData)
+C -> S : 1.3: Call Service (addNewStaff(newStaffData))
+
+S --> DM : 1.4: Create instance of Staff Domain Model
+
+S -> Repo : 1.5: add(staff)
+Repo -> P : 1.6: add() to Database
+P -> Repo : 1.7: return result (success/failure)
+
+alt [Staff Creation Successful]
+    Repo -> S : 1.8: Staff saved successfully
+    S -> C : 1.9: Successfully Created Staff
+    C -> R : 1.10: Forward response to Routing
+    R -> A : 1.11: Successfully Created Staff Response
+else [Staff Creation Failed]
+    Repo -> S : 1.8.1: Failed to Save Staff
+    S -> C : 1.9.1: Failed to Create Staff (error message)
+    C -> R : 1.10.1: Forward error response to Routing
+    R -> A : 1.11.1: Failed to Create Staff Response
+end
+@enduml
+
+

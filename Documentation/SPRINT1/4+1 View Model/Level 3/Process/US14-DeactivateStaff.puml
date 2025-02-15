@@ -1,0 +1,28 @@
+@startuml RemoveStaffProfile
+actor Administrator as A
+participant "Routing" as R
+participant "Controller" as C
+participant "Application Service" as S
+participant "Repository" as Repo
+participant "Persistence" as P
+
+A -> R : 1: DELETE Remove Staff Profile
+R -> C : 1.1: DELETE(licenseNumber)
+C -> S : 1.1.1: removeStaff(licenseNumber)
+S -> Repo : 1.1.1.1: getStaffByLicenseNumber(licenseNumber)
+Repo -> P : 1.1.1.1.1: select()
+P --> Repo : 1.1.1.1.2: return staff object
+Repo --> S : 1.1.1.2: return staff entity
+S -> Repo : 1.1.1.3: removeStaff(staff)
+Repo -> P : 1.1.1.3.1: delete()
+P --> Repo : 1.1.1.3.2: return delete result
+Repo --> S : 1.1.1.4: return result
+S --> C : 1.1.2: return result
+C --> R : 1.2: return result
+
+alt [Staff Profile Removed Successfully]
+    A <- R : 1.3: Successfully Removed Staff Profile
+else [Remove Failed]
+    A <- R : 1.4: Fail Removing Staff Profile
+end
+@enduml
